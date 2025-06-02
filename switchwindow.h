@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QLabel>
+#include "vmcontroller.h"
 
 #define WINDOW_HIDE_HEIGHT  2
 
@@ -17,13 +18,17 @@ public Q_SLOTS:
 
 private:
     void resizeWindow(bool isShow);
+    void refreshVMStatus();
 
     int m_windowWidth;
     int m_windowHeight;
     bool m_isShow = true;
+    bool m_isInVM = false;
     QRect m_windowRect;
     QWidget m_mainWidget;
     QLabel m_switchTextLabel;
+
+    VMController m_vmController;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

@@ -1,12 +1,13 @@
 #include "switchwindow.h"
+#include "vmcontroller.h"
 #include <QVBoxLayout>
 #include <QScreen>
 #include <QGuiApplication>
 #include <QDebug>
+#include <QTimer>
 
 SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
 {
-    m_switchTextLabel.setText(tr("切换至虚拟机"));
     m_switchTextLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -21,7 +22,12 @@ SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
     // 设置 Qt::X11BypassWindowManagerHint 以不被 gxde-top-panel 和 dde-dock 干扰
     this->setWindowFlags(Qt::WindowDoesNotAcceptFocus | Qt::X11BypassWindowManagerHint);
 
-
+    refreshVMStatus();  // 刷新文案
+    // 设置 Timer 定期获取虚拟机状态
+    QTimer *vmRefreshTimer = new QTimer();
+    connect(vmRefreshTimer, &QTimer::timeout, this, &SwitchWindow::refreshVMStatus);
+    vmRefreshTimer->setInterval(500);
+    vmRefreshTimer->start();
 }
 
 void SwitchWindow::show()
@@ -63,6 +69,13 @@ void SwitchWindow::resizeWindow(bool isShow)
     return;
 }
 
+void SwitchWindow::refreshVMStatus()
+{
+    m_switchTextLabel.setText(m_vmController.isInVM()
+                                  ? tr("切换至 Linux")
+                                  : tr("切换至虚拟机"));
+}
+
 bool SwitchWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == this) {
@@ -75,13 +88,12 @@ bool SwitchWindow::eventFilter(QObject *obj, QEvent *event)
                 resizeWindow(false);
             }
 
-
-
             return true;
         } else if (event->type() == QEvent::HoverLeave) {
             resizeWindow(false);
         } else if (event->type() == QEvent::MouseButtonPress) {
-            qDebug() << "Mouse Press";
+            m_vmController.switchAuto();
+            refreshVMStatus();
         }
     }
     return QWidget::eventFilter(obj, event);
