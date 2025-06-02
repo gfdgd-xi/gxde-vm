@@ -77,7 +77,7 @@ void SwitchWindow::refreshVMStatus()
         return;
     }
     m_switchTextLabel.setText(m_vmController.isInVM()
-                                  ? tr("切换至 Linux")
+                                  ? tr("切换至宿主机")
                                   : tr("切换至虚拟机"));
 }
 

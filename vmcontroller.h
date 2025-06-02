@@ -3,6 +3,7 @@
 
 #include <KWindowSystem>
 #include <QObject>
+#include <QTimer>
 
 #define VM_NAME "windows-10"
 
@@ -20,6 +21,7 @@ public:
 
 private:
     WId m_spiceID;
+    QTimer m_searchVM;
 };
 
 #endif // VMCONTROLLER_H

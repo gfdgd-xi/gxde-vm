@@ -10,14 +10,17 @@
 VMController::VMController()
 {
     researchVMWindow();
-    QTimer *searchVM = new QTimer();
-    connect(searchVM, &QTimer::timeout, this, &VMController::researchVMWindow);
-    searchVM->setInterval(1000);
-    searchVM->start();
+    connect(&m_searchVM, &QTimer::timeout, this, &VMController::researchVMWindow);
+    m_searchVM.setInterval(1000);
+    m_searchVM.start();
 }
 
 void VMController::researchVMWindow()
 {
+    if (!isDie()) {
+        // 如果虚拟机窗口没有销毁则不重新获取 id
+        return;
+    }
     for (WId id : KWindowSystem::windows()) {
         KWindowInfo info(id, NET::WMVisibleName | NET::WMName | NET::WMState);
         if (VM_NAME == info.visibleName()) {

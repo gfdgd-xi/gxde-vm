@@ -1,5 +1,7 @@
 #include <QApplication>
+#include <QProcess>
 #include "switchwindow.h"
+#include "vmcontroller.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,18 +9,25 @@ int main(int argc, char *argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
 
-    // Set up code that uses the Qt event loop here.
-    // Call a.quit() or a.exit() to quit the application.
-    // A not very useful example would be including
-    // #include <QTimer>
-    // near the top of the file and calling
-    // QTimer::singleShot(5000, &a, &QCoreApplication::quit);
-    // which quits the application after 5 seconds.
+    QString configPath = "/media/gfdgd_xi/aa5c0419-e1b5-4ff5-8160-14f0c5b2bd3a/qemu-test/win10/windows-10.conf";
 
-    // If you do not need a running Qt event loop, remove the call
-    // to a.exec() or use the Non-Qt Plain C++ Application template.
-
-
+    VMController *vm = new VMController();
+    if (vm->isDie()) {
+        // 如果虚拟机未开启，则手动开启虚拟机
+        QProcess *process = new QProcess();
+        process->start("quickemu", QStringList() << "--vm"
+                                                 << configPath
+                                                 << "--display"
+                                                 << "spice"
+                                                 // 共享文件夹：/
+                                                 << "-public-dir"
+                                                 << "/"
+                                                 // 全屏显示
+                                                 << "--fullscreen");
+        process->waitForStarted();
+        process->waitForFinished();
+    }
+    delete vm;
 
     auto window = SwitchWindow();
     window.show();
