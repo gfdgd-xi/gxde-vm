@@ -5,10 +5,15 @@
 #include <QGuiApplication>
 #include <QDebug>
 #include <QTimer>
+#include <QMessageBox>
 
 SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
 {
     m_switchTextLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    m_switchTextLabel.setStyleSheet("color: white");
+
+    setObjectName("switchVMWindow");
+    setStyleSheet("QWidget#switchVMWindow {background: grey;}");
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(&m_switchTextLabel);
@@ -28,6 +33,10 @@ SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
     connect(vmRefreshTimer, &QTimer::timeout, this, &SwitchWindow::refreshVMStatus);
     vmRefreshTimer->setInterval(500);
     vmRefreshTimer->start();
+
+    if (m_vmController.isDie()) {
+        m_vmController.startVM();
+    }
 }
 
 void SwitchWindow::show()
@@ -71,7 +80,7 @@ void SwitchWindow::resizeWindow(bool isShow)
 
 void SwitchWindow::refreshVMStatus()
 {
-    setStyleSheet("background: grey; color: white;");
+    //setStyleSheet("background: grey; color: white;");
     if (m_vmController.isDie()) {
         m_switchTextLabel.setText(tr("虚拟机未启动"));
         return;
@@ -79,6 +88,29 @@ void SwitchWindow::refreshVMStatus()
     m_switchTextLabel.setText(m_vmController.isInVM()
                                   ? tr("切换至宿主机")
                                   : tr("切换至虚拟机"));
+}
+
+void SwitchWindow::switchVMAndHost()
+{
+    if (m_vmController.isDie()) {
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle(tr("您是否要开启虚拟机？"));
+        msgBox.setText(tr("虚拟机已关闭，是否开启虚拟机？"));
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        // 10s 后自动关闭对话框
+        QTimer timer;
+        timer.setInterval(5 * 1000);
+        connect(&timer, &QTimer::timeout, this, [&msgBox](){msgBox.done(QMessageBox::No);});
+        timer.start();
+        auto msg = msgBox.exec();
+        if (msg == QMessageBox::Yes) {
+            m_vmController.startVM();
+        }
+    }
+    m_vmController.switchAuto();
+    refreshVMStatus();
 }
 
 bool SwitchWindow::eventFilter(QObject *obj, QEvent *event)
@@ -96,9 +128,8 @@ bool SwitchWindow::eventFilter(QObject *obj, QEvent *event)
             return true;
         } else if (event->type() == QEvent::HoverLeave) {
             resizeWindow(false);
-        } else if (event->type() == QEvent::MouseButtonPress) {
-            m_vmController.switchAuto();
-            refreshVMStatus();
+        } else if (event->type() == QEvent::MouseButtonRelease) {
+            switchVMAndHost();
         }
     }
     return QWidget::eventFilter(obj, event);

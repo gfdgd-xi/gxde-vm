@@ -6,6 +6,7 @@
 #include <NETWM>
 #include <QX11Info>
 #include <QTimer>
+#include <QProcess>
 
 VMController::VMController()
 {
@@ -67,4 +68,25 @@ bool VMController::isInVM()
         return 0;
     }
     return !info.isMinimized();
+}
+
+void VMController::startVM()
+{
+    QString configPath = "/media/gfdgd_xi/aa5c0419-e1b5-4ff5-8160-14f0c5b2bd3a/qemu-test/win10/windows-10.conf";
+    m_vmProcess.start("quickemu", QStringList() << "--vm"
+                                             << configPath
+                                             << "--display"
+                                             << "spice"
+                                             // 共享根目录
+                                             << "-public-dir"
+                                             << "/"
+                                             // 全屏显示
+                                             << "--fullscreen");
+    m_vmProcess.waitForStarted();
+    m_vmProcess.waitForFinished();
+}
+
+void VMController::killVM()
+{
+    m_vmProcess.kill();
 }

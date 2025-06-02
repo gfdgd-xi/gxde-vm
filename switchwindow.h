@@ -19,6 +19,7 @@ public Q_SLOTS:
 private:
     void resizeWindow(bool isShow);
     void refreshVMStatus();
+    void switchVMAndHost();
 
     int m_windowWidth;
     int m_windowHeight;
