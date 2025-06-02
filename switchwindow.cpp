@@ -71,6 +71,11 @@ void SwitchWindow::resizeWindow(bool isShow)
 
 void SwitchWindow::refreshVMStatus()
 {
+    setStyleSheet("background: grey; color: white;");
+    if (m_vmController.isDie()) {
+        m_switchTextLabel.setText(tr("虚拟机未启动"));
+        return;
+    }
     m_switchTextLabel.setText(m_vmController.isInVM()
                                   ? tr("切换至 Linux")
                                   : tr("切换至虚拟机"));

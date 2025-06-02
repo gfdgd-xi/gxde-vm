@@ -2,11 +2,13 @@
 #define VMCONTROLLER_H
 
 #include <KWindowSystem>
+#include <QObject>
 
 #define VM_NAME "windows-10"
 
-class VMController
+class VMController : public QObject
 {
+    Q_OBJECT
 public:
     VMController();
     void switchToVM();
@@ -14,6 +16,7 @@ public:
     void switchAuto();
     void researchVMWindow();
     bool isInVM();
+    bool isDie();
 
 private:
     WId m_spiceID;

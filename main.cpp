@@ -3,6 +3,8 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
 
     // Set up code that uses the Qt event loop here.
@@ -15,8 +17,8 @@ int main(int argc, char *argv[])
 
     // If you do not need a running Qt event loop, remove the call
     // to a.exec() or use the Non-Qt Plain C++ Application template.
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+
 
     auto window = SwitchWindow();
     window.show();

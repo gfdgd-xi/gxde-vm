@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets DBus)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets DBus)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets DBus X11Extras)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets DBus X11Extras)
 
 find_package(KF5WindowSystem)
 
@@ -24,7 +24,8 @@ add_executable(gxde-vm
 target_link_libraries(gxde-vm Qt${QT_VERSION_MAJOR}::Core
                               Qt${QT_VERSION_MAJOR}::Widgets
                               Qt${QT_VERSION_MAJOR}::DBus
-                            KF5::WindowSystem)
+                              Qt${QT_VERSION_MAJOR}::X11Extras
+                              KF5::WindowSystem)
 
 include(GNUInstallDirs)
 install(TARGETS gxde-vm
