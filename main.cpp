@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QProcess>
 #include "switchwindow.h"
-#include "vmcontroller.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,8 +8,8 @@ int main(int argc, char *argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
 
-    auto window = SwitchWindow();
-    window.show();
+    auto switchWindow = SwitchWindow();
+    switchWindow.show();
 
     return a.exec();
 }

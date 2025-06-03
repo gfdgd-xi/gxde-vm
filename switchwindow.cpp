@@ -1,13 +1,16 @@
 #include "switchwindow.h"
 #include "vmcontroller.h"
+#include "vminstallwindow.h"
 #include <QVBoxLayout>
 #include <QScreen>
 #include <QGuiApplication>
 #include <QDebug>
 #include <QTimer>
 #include <QMessageBox>
+#include <QMenu>
 
-SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
+SwitchWindow::SwitchWindow(QWidget *parent)
+    : QWidget(parent)
 {
     m_switchTextLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     m_switchTextLabel.setStyleSheet("color: white");
@@ -34,9 +37,35 @@ SwitchWindow::SwitchWindow(QWidget *parent) : QWidget(parent)
     vmRefreshTimer->setInterval(500);
     vmRefreshTimer->start();
 
+    // 设置应用托盘
+    initTrayIcon();
+
     if (m_vmController.isDie()) {
         m_vmController.startVM();
     }
+}
+
+void SwitchWindow::initTrayIcon()
+{
+    QMenu *menu = new QMenu();
+    QAction *openSettingWindowAction = new QAction(tr("虚拟机设置"));
+    QAction *exitAction = new QAction(tr("Exit"));
+
+    menu->addAction(openSettingWindowAction);
+    menu->addSeparator();
+    menu->addAction(exitAction);
+
+
+    connect(openSettingWindowAction, &QAction::triggered, this, [this](){
+        VMInstallWindow *window = new VMInstallWindow(this);
+        window->show();
+    });
+    connect(exitAction, &QAction::triggered, this, &std::exit);
+
+    m_trayIcon.setIcon(QIcon::fromTheme("deepin-launcher"));
+    m_trayIcon.setToolTip(tr("GXDE 虚拟机工具"));
+    m_trayIcon.setContextMenu(menu);
+    m_trayIcon.show();
 }
 
 void SwitchWindow::show()

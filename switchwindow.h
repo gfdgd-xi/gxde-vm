@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QLabel>
+#include <QSystemTrayIcon>
 #include "vmcontroller.h"
 
 #define WINDOW_HIDE_HEIGHT  2
@@ -20,6 +21,7 @@ private:
     void resizeWindow(bool isShow);
     void refreshVMStatus();
     void switchVMAndHost();
+    void initTrayIcon();
 
     int m_windowWidth;
     int m_windowHeight;
@@ -28,6 +30,7 @@ private:
     QRect m_windowRect;
     QWidget m_mainWidget;
     QLabel m_switchTextLabel;
+    QSystemTrayIcon m_trayIcon;
 
     VMController m_vmController;
 
