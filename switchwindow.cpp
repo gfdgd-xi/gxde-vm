@@ -12,6 +12,8 @@
 SwitchWindow::SwitchWindow(QWidget *parent)
     : QWidget(parent)
 {
+    m_vmController = new VMController("/media/gfdgd_xi/aa5c0419-e1b5-4ff5-8160-14f0c5b2bd3a/qemu-test/win10/", "windows-10");
+
     m_switchTextLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     m_switchTextLabel.setStyleSheet("color: white");
 
@@ -40,8 +42,8 @@ SwitchWindow::SwitchWindow(QWidget *parent)
     // 设置应用托盘
     initTrayIcon();
 
-    if (m_vmController.isDie()) {
-        m_vmController.startVM();
+    if (m_vmController->isDie()) {
+        m_vmController->startVM();
     }
 }
 
@@ -110,18 +112,18 @@ void SwitchWindow::resizeWindow(bool isShow)
 void SwitchWindow::refreshVMStatus()
 {
     //setStyleSheet("background: grey; color: white;");
-    if (m_vmController.isDie()) {
-        m_switchTextLabel.setText(tr("虚拟机未启动"));
+    if (m_vmController->isDie()) {
+        m_switchTextLabel.setText("<b>" + tr("虚拟机未启动") + "</b>");
         return;
     }
-    m_switchTextLabel.setText(m_vmController.isInVM()
+    m_switchTextLabel.setText("<b>" + (m_vmController->isInVM()
                                   ? tr("切换至宿主机")
-                                  : tr("切换至虚拟机"));
+                                  : tr("切换至虚拟机")) + "</b>");
 }
 
 void SwitchWindow::switchVMAndHost()
 {
-    if (m_vmController.isDie()) {
+    if (m_vmController->isDie()) {
         QMessageBox msgBox(this);
         msgBox.setWindowTitle(tr("您是否要开启虚拟机？"));
         msgBox.setText(tr("虚拟机已关闭，是否开启虚拟机？"));
@@ -135,10 +137,10 @@ void SwitchWindow::switchVMAndHost()
         timer.start();
         auto msg = msgBox.exec();
         if (msg == QMessageBox::Yes) {
-            m_vmController.startVM();
+            m_vmController->startVM();
         }
     }
-    m_vmController.switchAuto();
+    m_vmController->switchAuto();
     refreshVMStatus();
 }
 

@@ -32,7 +32,7 @@ private:
     QLabel m_switchTextLabel;
     QSystemTrayIcon m_trayIcon;
 
-    VMController m_vmController;
+    VMController *m_vmController;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

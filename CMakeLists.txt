@@ -21,6 +21,7 @@ add_executable(gxde-vm
   switchwindow.h switchwindow.cpp
   vmcontroller.h vmcontroller.cpp
   vminstallwindow.h vminstallwindow.cpp
+  configreader.h configreader.cpp
 )
 target_link_libraries(gxde-vm Qt${QT_VERSION_MAJOR}::Core
                               Qt${QT_VERSION_MAJOR}::Widgets

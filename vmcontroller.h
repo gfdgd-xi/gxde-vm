@@ -6,13 +6,13 @@
 #include <QTimer>
 #include <QProcess>
 
-#define VM_NAME "windows-10"
+//#define VM_NAME "windows-10"
 
 class VMController : public QObject
 {
     Q_OBJECT
 public:
-    VMController();
+    VMController(QString vmConfDirPath, QString vmConfName);
     void switchToVM();
     void switchToPC();
     void switchAuto();
@@ -26,6 +26,8 @@ private:
     WId m_spiceID;
     QTimer m_searchVM;
     QProcess m_vmProcess;
+    QString m_vmConfDirPath;
+    QString m_vmConfName;
 };
 
 #endif // VMCONTROLLER_H

@@ -8,8 +8,10 @@
 #include <QTimer>
 #include <QProcess>
 
-VMController::VMController()
+VMController::VMController(QString vmConfDirPath, QString vmConfName)
 {
+    m_vmConfDirPath = vmConfDirPath;
+    m_vmConfName = vmConfName;
     researchVMWindow();
     connect(&m_searchVM, &QTimer::timeout, this, &VMController::researchVMWindow);
     m_searchVM.setInterval(1000);
@@ -24,7 +26,7 @@ void VMController::researchVMWindow()
     }
     for (WId id : KWindowSystem::windows()) {
         KWindowInfo info(id, NET::WMVisibleName | NET::WMName | NET::WMState);
-        if (VM_NAME == info.visibleName()) {
+        if (m_vmConfName == info.visibleName()) {
             m_spiceID = id;
             break;
         }
@@ -72,7 +74,7 @@ bool VMController::isInVM()
 
 void VMController::startVM()
 {
-    QString configPath = "/media/gfdgd_xi/aa5c0419-e1b5-4ff5-8160-14f0c5b2bd3a/qemu-test/win10/windows-10.conf";
+    QString configPath = m_vmConfDirPath + "/" + m_vmConfName + ".conf";
     m_vmProcess.start("quickemu", QStringList() << "--vm"
                                              << configPath
                                              << "--display"
