@@ -8,11 +8,13 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QMenu>
+#include "commondefine.h"
 
 SwitchWindow::SwitchWindow(QWidget *parent)
     : QWidget(parent)
 {
-    m_vmController = new VMController("/media/gfdgd_xi/aa5c0419-e1b5-4ff5-8160-14f0c5b2bd3a/qemu-test/win10/", "windows-10");
+    m_configReader = new ConfigReader(PROGRAM_NAME);
+    m_vmController = new VMController(m_configReader->read(PROGRAM_NAME, "VMConfPath").toString(), "windows-10");
 
     m_switchTextLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     m_switchTextLabel.setStyleSheet("color: white");
@@ -45,6 +47,11 @@ SwitchWindow::SwitchWindow(QWidget *parent)
     if (m_vmController->isDie()) {
         m_vmController->startVM();
     }
+}
+
+SwitchWindow::~SwitchWindow()
+{
+    delete m_vmController;
 }
 
 void SwitchWindow::initTrayIcon()

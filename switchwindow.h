@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QSystemTrayIcon>
 #include "vmcontroller.h"
+#include "configreader.h"
 
 #define WINDOW_HIDE_HEIGHT  2
 
@@ -13,6 +14,7 @@ class SwitchWindow : public QWidget
 {
 public:
     explicit SwitchWindow(QWidget *parent = nullptr);
+    ~SwitchWindow();
 
 public Q_SLOTS:
     void show();
@@ -31,7 +33,7 @@ private:
     QWidget m_mainWidget;
     QLabel m_switchTextLabel;
     QSystemTrayIcon m_trayIcon;
-
+    ConfigReader *m_configReader;
     VMController *m_vmController;
 
 protected:

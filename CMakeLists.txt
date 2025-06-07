@@ -22,6 +22,9 @@ add_executable(gxde-vm
   vmcontroller.h vmcontroller.cpp
   vminstallwindow.h vminstallwindow.cpp
   configreader.h configreader.cpp
+  commondefine.h
+  qbrowseredit.h qbrowseredit.cpp
+
 )
 target_link_libraries(gxde-vm Qt${QT_VERSION_MAJOR}::Core
                               Qt${QT_VERSION_MAJOR}::Widgets
